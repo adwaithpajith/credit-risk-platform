@@ -1,16 +1,50 @@
 from __future__ import annotations
 
 import os
+import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load .env once, without overriding variables already supplied by
-# the environment or Docker.
 load_dotenv(override=False)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+DATABASE_DOWNLOAD_URL = (
+    "https://github.com/adwaithpajith/credit-risk-platform/"
+    "releases/download/v1.0.0/credit_risk.db"
+)
+
+
+def ensure_database_file() -> None:
+    """Download the analytical SQLite database when running in the cloud."""
+
+    db_path = PROJECT_ROOT / "data" / "credit_risk.db"
+
+    if db_path.exists() and db_path.stat().st_size > 0:
+        return
+
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    print("credit_risk.db not found. Downloading release asset...")
+
+    try:
+        urllib.request.urlretrieve(
+            DATABASE_DOWNLOAD_URL,
+            db_path,
+        )
+    except Exception as exc:
+        if db_path.exists():
+            db_path.unlink()
+        raise RuntimeError(
+            "Could not download credit_risk.db from the GitHub release."
+        ) from exc
+
+    if not db_path.exists() or db_path.stat().st_size == 0:
+        raise RuntimeError(
+            "credit_risk.db download completed but the file is empty or missing."
+        )
 
 
 def _bool(name: str, default: bool) -> bool:
@@ -29,7 +63,6 @@ def _bool(name: str, default: bool) -> bool:
 
 def _float(name: str, default: float) -> float:
     val = os.getenv(name)
-
     return float(val) if val not in (None, "") else default
 
 
@@ -50,7 +83,6 @@ class PathConfig:
     models_dir: Path = PROJECT_ROOT / "models"
 
     sql_dir: Path = PROJECT_ROOT / "sql"
-
     logs_dir: Path = PROJECT_ROOT / "logs"
 
     def ensure(self) -> None:
@@ -69,10 +101,6 @@ class PathConfig:
 
 @dataclass(frozen=True)
 class DataConfig:
-    # The assignment requires the real Home Credit Default Risk dataset.
-    # Synthetic data is therefore OFF by default and must be explicitly
-    # enabled for development/testing.
-
     use_synthetic_fallback: bool = field(
         default_factory=lambda: _bool(
             "USE_SYNTHETIC_FALLBACK",
@@ -146,11 +174,6 @@ class ModelConfig:
         )
     )
 
-    # Business cost ratio:
-    # how many times worse a missed defaulter (false negative)
-    # is compared with unnecessarily declining a good applicant
-    # (false positive).
-
     fn_cost_ratio: float = field(
         default_factory=lambda: _float(
             "FN_COST_RATIO",
@@ -175,12 +198,6 @@ class ModelConfig:
 
 @dataclass(frozen=True)
 class DBConfig:
-    # SQLite is the default so the application can run locally or
-    # in Streamlit without requiring an external database.
-    #
-    # docker-compose can override DATABASE_URL when PostgreSQL
-    # is used.
-
     database_url: str = field(
         default_factory=lambda: os.getenv(
             "DATABASE_URL",
@@ -237,8 +254,6 @@ class LLMConfig:
         )
     )
 
-    # Cache identical questions to reduce unnecessary Gemini API calls
-    # and improve response speed.
     enable_cache: bool = field(
         default_factory=lambda: _bool(
             "LLM_ENABLE_CACHE",
@@ -248,10 +263,6 @@ class LLMConfig:
 
     @property
     def has_api_key(self) -> bool:
-        """
-        Return True only when Gemini is configured with an API key.
-        """
-
         return (
             self.provider.lower() == "gemini"
             and bool(self.gemini_api_key)
@@ -259,10 +270,6 @@ class LLMConfig:
 
     @property
     def active_model_name(self) -> str:
-        """
-        Return the configured Gemini model name.
-        """
-
         if self.provider.lower() == "gemini":
             return self.gemini_model
 
@@ -301,5 +308,6 @@ class AppConfig:
 
 config = AppConfig()
 
-# Ensure required directories exist when configuration is loaded.
 config.paths.ensure()
+
+ensure_database_file()
