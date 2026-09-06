@@ -7,45 +7,89 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 load_dotenv(override=False)
 
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+# ---------------------------------------------------------------------------
+# Cloud release assets
+# ---------------------------------------------------------------------------
 
 DATABASE_DOWNLOAD_URL = (
     "https://github.com/adwaithpajith/credit-risk-platform/"
     "releases/download/v1.0.0/credit_risk.db"
 )
 
+APPLICATION_DOWNLOAD_URL = (
+    "https://github.com/adwaithpajith/credit-risk-platform/"
+    "releases/download/v1.0.0/application_train.csv"
+)
 
-def ensure_database_file() -> None:
-    """Download the analytical SQLite database when running in the cloud."""
 
-    db_path = PROJECT_ROOT / "data" / "credit_risk.db"
+def _download_file(url: str, destination: Path) -> None:
+    """Download a required release asset when it is missing."""
 
-    if db_path.exists() and db_path.stat().st_size > 0:
+    if destination.exists() and destination.stat().st_size > 0:
         return
 
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    destination.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-    print("credit_risk.db not found. Downloading release asset...")
+    print(f"Downloading {destination.name}...")
 
     try:
         urllib.request.urlretrieve(
-            DATABASE_DOWNLOAD_URL,
-            db_path,
+            url,
+            destination,
         )
+
     except Exception as exc:
-        if db_path.exists():
-            db_path.unlink()
+        if destination.exists():
+            destination.unlink()
+
         raise RuntimeError(
-            "Could not download credit_risk.db from the GitHub release."
+            f"Could not download {destination.name} "
+            "from the GitHub release."
         ) from exc
 
-    if not db_path.exists() or db_path.stat().st_size == 0:
+    if not destination.exists() or destination.stat().st_size == 0:
         raise RuntimeError(
-            "credit_risk.db download completed but the file is empty or missing."
+            f"{destination.name} download completed "
+            "but the file is empty or missing."
         )
 
+
+def ensure_required_files() -> None:
+    """
+    Ensure the cloud deployment has the required
+    database and real Home Credit dataset.
+    """
+
+    # Analytical SQLite database used by Talk-to-Data.
+    _download_file(
+        DATABASE_DOWNLOAD_URL,
+        PROJECT_ROOT / "data" / "credit_risk.db",
+    )
+
+    # Real Home Credit application dataset used by
+    # EDA and Explainability.
+    _download_file(
+        APPLICATION_DOWNLOAD_URL,
+        PROJECT_ROOT
+        / "data"
+        / "raw"
+        / "application_train.csv",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Environment helpers
+# ---------------------------------------------------------------------------
 
 def _bool(name: str, default: bool) -> bool:
     val = os.getenv(name)
@@ -63,6 +107,7 @@ def _bool(name: str, default: bool) -> bool:
 
 def _float(name: str, default: float) -> float:
     val = os.getenv(name)
+
     return float(val) if val not in (None, "") else default
 
 
@@ -71,6 +116,10 @@ def _int(name: str, default: int) -> int:
 
     return int(val) if val not in (None, "") else default
 
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
 
 @dataclass(frozen=True)
 class PathConfig:
@@ -99,8 +148,16 @@ class PathConfig:
             )
 
 
+# ---------------------------------------------------------------------------
+# Data configuration
+# ---------------------------------------------------------------------------
+
 @dataclass(frozen=True)
 class DataConfig:
+    # The assignment requires the real Home Credit Default Risk dataset.
+    # Synthetic data is therefore OFF by default and must be explicitly
+    # enabled for development/testing.
+
     use_synthetic_fallback: bool = field(
         default_factory=lambda: _bool(
             "USE_SYNTHETIC_FALLBACK",
@@ -144,6 +201,10 @@ class DataConfig:
     )
 
 
+# ---------------------------------------------------------------------------
+# Model configuration
+# ---------------------------------------------------------------------------
+
 @dataclass(frozen=True)
 class ModelConfig:
     n_folds: int = field(
@@ -174,6 +235,10 @@ class ModelConfig:
         )
     )
 
+    # Business cost ratio:
+    # how many times worse a missed defaulter (false negative)
+    # is compared with unnecessarily declining a good applicant
+    # (false positive).
     fn_cost_ratio: float = field(
         default_factory=lambda: _float(
             "FN_COST_RATIO",
@@ -196,8 +261,18 @@ class ModelConfig:
     )
 
 
+# ---------------------------------------------------------------------------
+# Database configuration
+# ---------------------------------------------------------------------------
+
 @dataclass(frozen=True)
 class DBConfig:
+    # SQLite is the default so the application can run locally or
+    # in Streamlit without requiring an external database.
+    #
+    # Docker Compose can override DATABASE_URL when PostgreSQL
+    # is used.
+
     database_url: str = field(
         default_factory=lambda: os.getenv(
             "DATABASE_URL",
@@ -212,6 +287,10 @@ class DBConfig:
         )
     )
 
+
+# ---------------------------------------------------------------------------
+# LLM configuration
+# ---------------------------------------------------------------------------
 
 @dataclass(frozen=True)
 class LLMConfig:
@@ -254,6 +333,8 @@ class LLMConfig:
         )
     )
 
+    # Cache identical questions to reduce unnecessary Gemini API calls
+    # and improve response speed.
     enable_cache: bool = field(
         default_factory=lambda: _bool(
             "LLM_ENABLE_CACHE",
@@ -263,6 +344,10 @@ class LLMConfig:
 
     @property
     def has_api_key(self) -> bool:
+        """
+        Return True only when Gemini is configured with an API key.
+        """
+
         return (
             self.provider.lower() == "gemini"
             and bool(self.gemini_api_key)
@@ -270,11 +355,19 @@ class LLMConfig:
 
     @property
     def active_model_name(self) -> str:
+        """
+        Return the configured Gemini model name.
+        """
+
         if self.provider.lower() == "gemini":
             return self.gemini_model
 
         return "unknown"
 
+
+# ---------------------------------------------------------------------------
+# Application configuration
+# ---------------------------------------------------------------------------
 
 @dataclass(frozen=True)
 class AppConfig:
@@ -306,8 +399,16 @@ class AppConfig:
     )
 
 
+# ---------------------------------------------------------------------------
+# Initialize configuration
+# ---------------------------------------------------------------------------
+
 config = AppConfig()
 
+
+# Ensure required directories exist.
 config.paths.ensure()
 
-ensure_database_file()
+
+# Download required cloud assets when missing.
+ensure_required_files()
