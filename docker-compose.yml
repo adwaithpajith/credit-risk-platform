@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: credit_risk_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-credit_risk}
+      POSTGRES_USER: ${POSTGRES_USER:-credit_risk_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-credit_risk_user} -d ${POSTGRES_DB:-credit_risk}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: credit_risk_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-credit_risk_user}:${POSTGRES_PASSWORD:-change_me_in_env}@db:5432/${POSTGRES_DB:-credit_risk}
+      USE_SYNTHETIC_FALLBACK: ${USE_SYNTHETIC_FALLBACK:-false}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.6-flash}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      FN_COST_RATIO: ${FN_COST_RATIO:-8.0}
+    volumes:
+      # Real dataset lives on the host and is mounted read-only -- the
+      # evaluator drops application_train.csv (+ optional bureau.csv) here
+      # per data/README.md; it is never baked into the image or git.
+      - ./data/raw:/app/data/raw:ro
+      # Model artifacts and logs persist across container restarts so
+      # training only has to happen once.
+      - model_artifacts:/app/models
+      - app_logs:/app/logs
+    ports:
+      - "8501:8501"
+
+volumes:
+  postgres_data:
+  model_artifacts:
+  app_logs:

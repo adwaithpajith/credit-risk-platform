@@ -1,0 +1,30 @@
+# Pinned to the exact versions this pipeline was built and tested against.
+# (Do not loosen these casually -- e.g. the rule-derivation logic in
+# src/ml/rules.py depends on a scikit-learn tree_.value behavior that
+# differs across versions; see the comment there before touching this pin.)
+
+# --- Core data & ML ---
+pandas==3.0.2
+numpy==2.4.4
+scikit-learn==1.8.0
+lightgbm==4.7.0
+shap==0.52.0
+joblib==1.5.3
+
+# --- Database / SQL ---
+SQLAlchemy==2.0.52
+psycopg2-binary==2.9.10
+sqlglot==30.18.0
+
+# --- LLM providers  ---
+google-genai==1.1.0
+
+# --- App / UI ---
+streamlit==1.63.0
+plotly==7.0.0
+tabulate==0.10.0
+
+# --- Config / utils ---
+python-dotenv==1.2.2
+pydantic==2.13.5
+PyYAML==6.0.3

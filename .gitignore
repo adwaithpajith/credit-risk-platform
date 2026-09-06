@@ -1,0 +1,37 @@
+# Environment / secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Dataset -- never commit real applicant data or its cache
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/*.db
+data/nl_to_sql_cache.json
+
+# Model artifacts -- reproducible via `python -m src.ml.train`, not committed
+models/*
+!models/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
