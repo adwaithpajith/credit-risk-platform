@@ -1,0 +1,194 @@
+[
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max > 0.681",
+      "overall external credit score > 0.59",
+      "credit to goods ratio <= 1.16"
+    ],
+    "predicted_band": "Low",
+    "support": 54218,
+    "precision": 0.924,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max > 0.681 AND overall external credit score > 0.59 AND credit to goods ratio <= 1.16 THEN predicted risk = Low (covers 54218 applicants, 92% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score > 0.339",
+      "overall external credit score > 0.432",
+      "credit to goods ratio <= 1.14"
+    ],
+    "predicted_band": "Medium",
+    "support": 44480,
+    "precision": 0.55,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score > 0.339 AND overall external credit score > 0.432 AND credit to goods ratio <= 1.14 THEN predicted risk = Medium (covers 44480 applicants, 55% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score > 0.339",
+      "overall external credit score <= 0.432",
+      "credit to goods ratio <= 1.21"
+    ],
+    "predicted_band": "Medium",
+    "support": 34862,
+    "precision": 0.721,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score > 0.339 AND overall external credit score <= 0.432 AND credit to goods ratio <= 1.21 THEN predicted risk = Medium (covers 34862 applicants, 72% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score > 0.339",
+      "overall external credit score > 0.432",
+      "credit to goods ratio > 1.14"
+    ],
+    "predicted_band": "Medium",
+    "support": 32423,
+    "precision": 0.741,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score > 0.339 AND overall external credit score > 0.432 AND credit to goods ratio > 1.14 THEN predicted risk = Medium (covers 32423 applicants, 74% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max > 0.681",
+      "overall external credit score > 0.59",
+      "credit to goods ratio > 1.16"
+    ],
+    "predicted_band": "Low",
+    "support": 24292,
+    "precision": 0.798,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max > 0.681 AND overall external credit score > 0.59 AND credit to goods ratio > 1.16 THEN predicted risk = Low (covers 24292 applicants, 80% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max <= 0.681",
+      "bureau amt credit sum mean > 3.31e+04",
+      "credit to goods ratio <= 1.14"
+    ],
+    "predicted_band": "Low",
+    "support": 20962,
+    "precision": 0.754,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max <= 0.681 AND bureau amt credit sum mean > 3.31e+04 AND credit to goods ratio <= 1.14 THEN predicted risk = Low (covers 20962 applicants, 75% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score <= 0.339",
+      "ext source min > 0.149",
+      "income source type > 0.206"
+    ],
+    "predicted_band": "High",
+    "support": 16613,
+    "precision": 0.612,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score <= 0.339 AND ext source min > 0.149 AND income source type > 0.206 THEN predicted risk = High (covers 16613 applicants, 61% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max <= 0.681",
+      "bureau amt credit sum mean > 3.31e+04",
+      "credit to goods ratio > 1.14"
+    ],
+    "predicted_band": "Low",
+    "support": 14366,
+    "precision": 0.515,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max <= 0.681 AND bureau amt credit sum mean > 3.31e+04 AND credit to goods ratio > 1.14 THEN predicted risk = Low (covers 14366 applicants, 52% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score <= 0.339",
+      "ext source min <= 0.149",
+      "overall external credit score <= 0.258"
+    ],
+    "predicted_band": "High",
+    "support": 12696,
+    "precision": 0.9,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score <= 0.339 AND ext source min <= 0.149 AND overall external credit score <= 0.258 THEN predicted risk = High (covers 12696 applicants, 90% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score > 0.339",
+      "overall external credit score <= 0.432",
+      "credit to goods ratio > 1.21"
+    ],
+    "predicted_band": "Medium",
+    "support": 10878,
+    "precision": 0.551,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score > 0.339 AND overall external credit score <= 0.432 AND credit to goods ratio > 1.21 THEN predicted risk = Medium (covers 10878 applicants, 55% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max > 0.681",
+      "overall external credit score <= 0.59",
+      "credit to goods ratio <= 1.14"
+    ],
+    "predicted_band": "Low",
+    "support": 10579,
+    "precision": 0.77,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max > 0.681 AND overall external credit score <= 0.59 AND credit to goods ratio <= 1.14 THEN predicted risk = Low (covers 10579 applicants, 77% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score <= 0.339",
+      "ext source min <= 0.149",
+      "overall external credit score > 0.258"
+    ],
+    "predicted_band": "High",
+    "support": 8040,
+    "precision": 0.678,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score <= 0.339 AND ext source min <= 0.149 AND overall external credit score > 0.258 THEN predicted risk = High (covers 8040 applicants, 68% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max > 0.681",
+      "overall external credit score <= 0.59",
+      "credit to goods ratio > 1.14"
+    ],
+    "predicted_band": "Low",
+    "support": 7035,
+    "precision": 0.528,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max > 0.681 AND overall external credit score <= 0.59 AND credit to goods ratio > 1.14 THEN predicted risk = Low (covers 7035 applicants, 53% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max <= 0.681",
+      "bureau amt credit sum mean <= 3.31e+04",
+      "credit to goods ratio <= 1.13"
+    ],
+    "predicted_band": "Medium",
+    "support": 6999,
+    "precision": 0.547,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max <= 0.681 AND bureau amt credit sum mean <= 3.31e+04 AND credit to goods ratio <= 1.13 THEN predicted risk = Medium (covers 6999 applicants, 55% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score <= 0.538",
+      "overall external credit score <= 0.339",
+      "ext source min > 0.149",
+      "income source type <= 0.206"
+    ],
+    "predicted_band": "Medium",
+    "support": 4583,
+    "precision": 0.737,
+    "plain_english": "IF overall external credit score <= 0.538 AND overall external credit score <= 0.339 AND ext source min > 0.149 AND income source type <= 0.206 THEN predicted risk = Medium (covers 4583 applicants, 74% agreement with the ML model)"
+  },
+  {
+    "conditions": [
+      "overall external credit score > 0.538",
+      "ext source max <= 0.681",
+      "bureau amt credit sum mean <= 3.31e+04",
+      "credit to goods ratio > 1.13"
+    ],
+    "predicted_band": "Medium",
+    "support": 4485,
+    "precision": 0.701,
+    "plain_english": "IF overall external credit score > 0.538 AND ext source max <= 0.681 AND bureau amt credit sum mean <= 3.31e+04 AND credit to goods ratio > 1.13 THEN predicted risk = Medium (covers 4485 applicants, 70% agreement with the ML model)"
+  }
+]
