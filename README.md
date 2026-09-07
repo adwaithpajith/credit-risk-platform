@@ -5,7 +5,7 @@ Default Risk](https://www.kaggle.com/competitions/home-credit-default-risk/data)
 dataset -- EDA, an explainable ML risk model, auto-derived business rules,
 an NL-to-SQL chatbot, and a multi-section UI, all Dockerized.
 
-Built for the NeoStats AI Engineer candidate assignment.
+
 
 \---
 
@@ -41,7 +41,7 @@ pieces (SQL guardrails, feature-engineering/train-serve consistency).
 
 ## 2\. Quick start
 
-### Option A -- Docker (recommended, matches the assignment's "single command" ask)
+###  Docker
 
 ```bash
 # 1. Get the real dataset (see data/README.md) and place the files here:
@@ -64,38 +64,7 @@ database automatically (see `scripts/entrypoint.sh`) -- subsequent
 restarts skip training since the model artifact persists in a named
 volume.
 
-### Option B -- Local (no Docker)
 
-```bash
-python -m venv .venv \&\& source .venv/bin/activate
-pip install -r requirements.txt
-
-# place the real dataset in data/raw/ as above
-python -m src.ml.train          # trains + saves model + metrics
-python -m src.ml.evaluate       # prints a readable evaluation report
-python -m src.ml.rules          # derives business rules
-python -m src.data.db\_loader    # scores applicants into local SQLite DB
-
-streamlit run app/streamlit\_app.py
-```
-
-### Option C -- Google Colab (training/verification only)
-
-If you'd rather not set up a local Python environment, see
-[**`COLAB\_GUIDE.md`**](COLAB_GUIDE.md) for step-by-step instructions to
-mount Google Drive, extract the dataset, and run training/evaluation
-directly in a Colab notebook. (Colab is for experimentation -- the
-Docker setup above remains the actual deployment target and what an
-evaluator should use.)
-
-### Running tests
-
-```bash
-pip install pytest
-pytest tests/ -v
-```
-
-\---
 
 ## 3\. Model selection \& class imbalance strategy
 
